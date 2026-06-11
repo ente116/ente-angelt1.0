@@ -258,12 +258,24 @@
             text-shadow: 0 0 40px rgba(160,255,0,0.8);
         }
 
-        /* Verhindert das Markieren von Text beim Wischen im Menü*/
+        /* Verhindert das Markieren von Text beim Wischen im Menü -----------------------------------------------------------------------------------------------------------------------------------*/
         .menu-item {
             -webkit-tap-highlight-color: transparent; /* Entfernt das graue Viereck beim Tippen */
             touch-action: none; /* Verhindert das Scrollen, während man im Menü wischt */
             user-select: none;
             -webkit-user-select: none;
+        }
+
+        /*slider menü handy*/
+        .menu-slider {
+            position: absolute;
+            right: 20px;
+            height: 60%;
+            writing-mode: bt-lr; /* Vertikaler Slider */
+            appearance: slider-vertical;
+            opacity: 0.3; /* Leicht sichtbar zum Anfassen */
+            cursor: pointer;
+            z-index: 10;
         }
 
         /* INTERAKTIVE 3D CARD ANIMATION */
@@ -511,42 +523,35 @@ navToggle.addEventListener("click", () => {
     fullscreenMenu.classList.toggle("open");
 });
 
-menuItems.forEach(item => {
+const slider = document.getElementById("menuSlider");
+
+slider.addEventListener("input", (e) => {
+    const activeIndex = e.target.value;
     
-    // Animation mit flüssigerer Steuerung
-    const moveAnimation = (e) => {
-        // Wir berechnen die Rotation basierend auf der Position des Fingers
-        const rect = item.getBoundingClientRect();
-        const relX = (e.clientX - rect.left) / rect.width - 0.5;
-        const relY = (e.clientY - rect.top) / rect.height - 0.5;
-        
-        menu3dText.style.transform = `rotateX(${relY * -40}deg) rotateY(${relX * 40}deg) scale(1.15)`;
-        menu3dText.style.color = "rgba(160, 255, 0, 0.12)";
-    };
-
-    const resetAnimation = () => {
-        menu3dText.style.transform = "rotateX(15deg) rotateY(-15deg) scale(1)";
-        menu3dText.style.color = "rgba(255, 255, 255, 0.018)";
-    };
-
-    // Events für Maus und Touch (Pointer events decken beides ab)
-    item.addEventListener("pointerenter", moveAnimation);
-    item.addEventListener("pointermove", moveAnimation);
-    item.addEventListener("pointerleave", resetAnimation);
-
-    // Klick-Logik bleibt
-    item.addEventListener("click", (e) => {
-        e.preventDefault();
-        const targetIndex = item.getAttribute("data-target");
-        const targetSection = sections[targetIndex];
-        
-        navToggle.classList.remove("active");
-        fullscreenMenu.classList.remove("open");
-        
-        setTimeout(() => {
-            targetSection.scrollIntoView({ behavior: "smooth" });
-        }, 150);
+    // 1. Alle Menüpunkte zurücksetzen
+    menuItems.forEach((item, index) => {
+        if (index == activeIndex) {
+            // Aktiver Punkt wird grün
+            item.style.color = "#a0ff00";
+            item.style.transform = "translateX(20px)";
+        } else {
+            item.style.color = "rgba(255, 255, 255, 0.35)";
+            item.style.transform = "translateX(0px)";
+        }
     });
+
+    // 2. Das Nays-Symbol passend dazu bewegen
+    // Wir nutzen die vertikale Position des Sliders, um den Winkel zu bestimmen
+    const rotation = (activeIndex - 2.5) * 20; 
+    menu3dText.style.transform = `rotateX(15deg) rotateY(${rotation}deg) scale(1.1)`;
+});
+
+// Beim Loslassen des Sliders wird die Sektion angesteuert
+slider.addEventListener("change", (e) => {
+    const targetSection = sections[e.target.value];
+    fullscreenMenu.classList.remove("open");
+    navToggle.classList.remove("active");
+    targetSection.scrollIntoView({ behavior: "smooth" });
 });
 </script>
 
