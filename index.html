@@ -257,13 +257,15 @@
             transform: translate3d(0, 0, 20px);
             text-shadow: 0 0 40px rgba(160,255,0,0.8);
         }
-
-        /* Verhindert das Markieren von Text beim Wischen im Menü -----------------------------------------------------------------------------------------------------------------------------------*/
-        .menu-item {
-            -webkit-tap-highlight-color: transparent; /* Entfernt das graue Viereck beim Tippen */
-            touch-action: none; /* Verhindert das Scrollen, während man im Menü wischt */
-            user-select: none;
-            -webkit-user-select: none;
+/*----------------------------------------------------------------------------------------------------------------------------------------*/
+        .touch-control-zone {
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 80px; /* Breite der Steuerfläche */
+            height: 100%;
+            z-index: 20;
+            touch-action: none; /* Wichtig: Verhindert Scrollen beim Bedienen */
         }
 
         /*slider menü handy*/
@@ -375,6 +377,7 @@
 
 <!-- LIQUID GLASS FULLSCREEN MENU -->
 <div class="fullscreen-menu" id="fullscreenMenu">
+    <div class="touch-control-zone" id="touchControl"></div> <!-- fd--------------------------------------------------------------ddddvvvvvvvvvvvvvvvvvvvvvvvv-vvvvvvvvvvv -->
     <div class="menu-bg-3d" id="menu3dText">nays</div>
     <nav class="menu-links">
         <a href="#" class="menu-item" data-text="home" data-target="0">home</a>
@@ -523,35 +526,56 @@ navToggle.addEventListener("click", () => {
     fullscreenMenu.classList.toggle("open");
 });
 
-const slider = document.getElementById("menuSlider");
 
-slider.addEventListener("input", (e) => {
-    const activeIndex = e.target.value;
+const touchZone = document.getElementById("touchControl");
+
+touchZone.addEventListener("pointermove", (e) => {
+    // 1. Berechne Position (0 bis 1)
+    const rect = touchZone.getBoundingClientRect();
+    const relativeY = (e.clientY - rect.top) / rect.height;
     
-    // 1. Alle Menüpunkte zurücksetzen
-    menuItems.forEach((item, index) => {
-        if (index == activeIndex) {
-            // Aktiver Punkt wird grün
-            item.style.color = "#a0ff00";
-            item.style.transform = "translateX(20px)";
-        } else {
-            item.style.color = "rgba(255, 255, 255, 0.35)";
-            item.style.transform = "translateX(0px)";
-        }
-    });
+    // 2. Bestimme den Menü-Index (0 bis 5)
+    const activeIndex = Math.floor(relativeY * 6); 
+    
+    if (activeIndex >= 0 && activeIndex <= 5) {
+        // Markierung der Themen
+        menuItems.forEach((item, index) => {
+            if (index === activeIndex) {
+                item.style.color = "#a0ff00";
+                item.style.transform = "translateZ(60px) scale(1.1)";
+            } else {
+                item.style.color = "rgba(255, 255, 255, 0.35)";
+                item.style.transform = "translateZ(0px) scale(1)";
+            }
+        });
 
-    // 2. Das Nays-Symbol passend dazu bewegen
-    // Wir nutzen die vertikale Position des Sliders, um den Winkel zu bestimmen
-    const rotation = (activeIndex - 2.5) * 20; 
-    menu3dText.style.transform = `rotateX(15deg) rotateY(${rotation}deg) scale(1.1)`;
+        // 3. Nays Logo Bewegung (sanfter Winkel-Bereich: -30 bis +30 Grad)
+        const rotation = (relativeY - 0.5) * 60;
+        menu3dText.style.transform = `rotateX(15deg) rotateY(${-rotation}deg) scale(1.1)`;
+        menu3dText.style.color = "rgba(160, 255, 0, 0.08)";
+    }
 });
 
-// Beim Loslassen des Sliders wird die Sektion angesteuert
-slider.addEventListener("change", (e) => {
-    const targetSection = sections[e.target.value];
-    fullscreenMenu.classList.remove("open");
-    navToggle.classList.remove("active");
-    targetSection.scrollIntoView({ behavior: "smooth" });
+// Wenn Finger die Zone verlässt, Reset
+touchZone.addEventListener("pointerleave", () => {
+    menuItems.forEach(item => {
+        item.style.color = "rgba(255, 255, 255, 0.35)";
+        item.style.transform = "translateZ(0px) scale(1)";
+    });
+    menu3dText.style.transform = "rotateX(15deg) rotateY(-15deg) scale(1)";
+    menu3dText.style.color = "rgba(255, 255, 255, 0.018)";
+});
+
+// Wenn man loslässt, zur Sektion springen
+touchZone.addEventListener("pointerup", (e) => {
+    const rect = touchZone.getBoundingClientRect();
+    const activeIndex = Math.floor(((e.clientY - rect.top) / rect.height) * 6);
+    
+    if (sections[activeIndex]) {
+        fullscreenMenu.classList.remove("open");
+        navToggle.classList.remove("active");
+        sections[activeIndex].scrollIntoView({ behavior: "smooth" });
+    }
 });
 </script>
 
