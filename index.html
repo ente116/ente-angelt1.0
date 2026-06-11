@@ -505,7 +505,8 @@ navToggle.addEventListener("click", () => {
 
 // GEISTESKRANKER HOVER- & TOUCH-EFFEKT IM MENÜ
 menuItems.forEach(item => {
-    // Funktion für die Animation
+    
+    // Animation auslösen
     const triggerAnimation = () => {
         const randomX = Math.floor(Math.random() * 30) - 15;
         const randomY = Math.floor(Math.random() * 30) - 15;
@@ -513,26 +514,26 @@ menuItems.forEach(item => {
         menu3dText.style.color = "rgba(160, 255, 0, 0.08)";
     };
 
+    // Animation zurücksetzen
     const resetAnimation = () => {
         menu3dText.style.transform = "rotateX(15deg) rotateY(-15deg) scale(1)";
         menu3dText.style.color = "rgba(255, 255, 255, 0.018)";
     };
 
-    // Maus-Events (Desktop)
+    // Maus-Events
     item.addEventListener("mouseenter", triggerAnimation);
     item.addEventListener("mouseleave", resetAnimation);
 
-    // Touch-Events (Handy)
-    item.addEventListener("touchstart", (e) => {
-        e.preventDefault(); // Verhindert das Scrollen, während man den Menüpunkt berührt
+    // Touch/Pointer-Events (Handy)
+    item.addEventListener("pointerdown", (e) => {
         triggerAnimation();
-    }, { passive: false });
-
-    item.addEventListener("touchend", () => {
-        resetAnimation();
     });
 
-    // Klick-Logik bleibt bestehen
+    // Wenn der Finger das Element verlässt oder der Klick beendet wird
+    item.addEventListener("pointerup", resetAnimation);
+    item.addEventListener("pointerleave", resetAnimation);
+
+    // NAVIGATION (Funktioniert jetzt auch auf Handys parallel zur Animation)
     item.addEventListener("click", (e) => {
         e.preventDefault();
         const targetIndex = item.getAttribute("data-target");
@@ -541,7 +542,10 @@ menuItems.forEach(item => {
         navToggle.classList.remove("active");
         fullscreenMenu.classList.remove("open");
         
-        targetSection.scrollIntoView({ behavior: "smooth" });
+        // Kurze Verzögerung, damit man die Animation beim Klick kurz sieht
+        setTimeout(() => {
+            targetSection.scrollIntoView({ behavior: "smooth" });
+        }, 150);
     });
 });
 
