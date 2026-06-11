@@ -213,7 +213,7 @@
             color: rgba(255, 255, 255, 0.018);
             transform-style: preserve-3d;
             transform: rotateX(15deg) rotateY(-15deg);
-            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), color 0.5s !important;
+            transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1), color 0.5s;
             pointer-events: none;
             white-space: nowrap;
             letter-spacing: -10px;
@@ -256,28 +256,6 @@
             opacity: 1;
             transform: translate3d(0, 0, 20px);
             text-shadow: 0 0 40px rgba(160,255,0,0.8);
-        }
-/*----------------------------------------------------------------------------------------------------------------------------------------*/
-        .touch-control-zone {
-            position: absolute;
-            right: 0;
-            top: 0;
-            width: 80px; /* Breite der Steuerfläche */
-            height: 100%;
-            z-index: 20;
-            touch-action: none; /* Wichtig: Verhindert Scrollen beim Bedienen */
-        }
-
-        /*slider menü handy*/
-        .menu-slider {
-            position: absolute;
-            right: 20px;
-            height: 60%;
-            writing-mode: bt-lr; /* Vertikaler Slider */
-            appearance: slider-vertical;
-            opacity: 0.3; /* Leicht sichtbar zum Anfassen */
-            cursor: pointer;
-            z-index: 10;
         }
 
         /* INTERAKTIVE 3D CARD ANIMATION */
@@ -355,15 +333,6 @@
         .impressum-clean { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; color: #ffffff; font-size: clamp(0.78rem, 1.6vw, 0.88rem); width: 100%; }
         .impressum-clean .title { text-transform: uppercase; letter-spacing: 2px; font-weight: 800; font-size: clamp(0.9rem, 1.8vw, 1.05rem); margin-bottom: 6px; }
         .impressum-clean .copyright { margin-top: 25px; font-size: 11px; opacity: 0.3; letter-spacing: 0.8px; border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 12px; width: 100%; max-width: 250px; }
-
-        /* Instagram Feed auf dem Handy verkleinern */
-        @media (max-width: 600px) {
-            .elfsight-app-3a1d833d-6292-4623-bb04-f9e9dd7970ff {
-                transform: scale(0.85); /* Skaliert das Feed auf 85% der Originalgröße */
-                transform-origin: top center;
-                margin-top: 10px !important;
-            }
-        }
     </style>
 </head>
 <body>
@@ -377,7 +346,6 @@
 
 <!-- LIQUID GLASS FULLSCREEN MENU -->
 <div class="fullscreen-menu" id="fullscreenMenu">
-    <div class="touch-control-zone" id="touchControl"></div> <!-- fd--------------------------------------------------------------ddddvvvvvvvvvvvvvvvvvvvvvvvv-vvvvvvvvvvv -->
     <div class="menu-bg-3d" id="menu3dText">nays</div>
     <nav class="menu-links">
         <a href="#" class="menu-item" data-text="home" data-target="0">home</a>
@@ -471,9 +439,13 @@
     <section data-index="4">
         <h2>Follow the Journey</h2>
         <p>Das hier ist nur ein kleiner Einblick. Wenn du mehr sehen willst echte Fänge, Sessions und Updates dann schau auf Instagram vorbei.</p>
-        <!-- Elfsight Instagram Feed | Untitled Instagram Feed -->
-        <script src="https://elfsightcdn.com/platform.js" async></script>
-        <div class="elfsight-app-3a1d833d-6292-4623-bb04-f9e9dd7970ff" data-elfsight-app-lazy></div>
+        <behold-widget feed-id="tF8k8wF0XamcoKQAHPoH"></behold-widget>
+        <script>
+        (() => {
+            const d=document,s=d.createElement("script");s.type="module";
+            s.src="https://w.behold.so/widget.js";d.head.append(s);
+        })();
+        </script>
     </section>
 
     <!-- SEKTION 5: IMPRESSUM -->
@@ -526,51 +498,32 @@ navToggle.addEventListener("click", () => {
     fullscreenMenu.classList.toggle("open");
 });
 
-
-// 1. Hover-Logik für PC (und allgemeine Funktion)
-const updateMenuUI = (index, relativeY = 0.5) => {
-    menuItems.forEach((item, i) => {
-        if (i === index) {
-            item.style.color = "#a0ff00";
-            item.style.transform = "translateZ(60px) scale(1.1)";
-        } else {
-            item.style.color = "rgba(255, 255, 255, 0.35)";
-            item.style.transform = "translateZ(0px) scale(1)";
-        }
+// GEISTESKRANKER HOVER-EFFEKT IM MENÜ
+menuItems.forEach(item => {
+    item.addEventListener("mouseenter", () => {
+        const randomX = Math.floor(Math.random() * 30) - 15;
+        const randomY = Math.floor(Math.random() * 30) - 15;
+        menu3dText.style.transform = `rotateX(${randomX}deg) rotateY(${randomY}deg) scale(1.15)`;
+        menu3dText.style.color = "rgba(160, 255, 0, 0.08)";
+    });
+    
+    item.addEventListener("mouseleave", () => {
+        menu3dText.style.transform = "rotateX(15deg) rotateY(-15deg) scale(1)";
+        menu3dText.style.color = "rgba(255, 255, 255, 0.018)";
     });
 
-    // 2. Nays Symbol Bewegung (Direktere Reaktion)
-    const rotation = (relativeY - 0.5) * 80; // Höherer Faktor = schnelleres Sliden
-    menu3dText.style.transform = `rotateX(15deg) rotateY(${-rotation}deg) scale(1.1)`;
-    menu3dText.style.color = "rgba(160, 255, 0, 0.12)";
-};
-
-// PC Hover-Events
-menuItems.forEach((item, index) => {
-    item.addEventListener("mouseenter", () => updateMenuUI(index));
-    item.addEventListener("mouseleave", () => updateMenuUI(-1)); // Reset
-});
-
-// Touch/Slider-Events
-touchZone.addEventListener("pointermove", (e) => {
-    const rect = touchZone.getBoundingClientRect();
-    const relativeY = (e.clientY - rect.top) / rect.height;
-    const activeIndex = Math.max(0, Math.min(5, Math.floor(relativeY * 6)));
-    
-    updateMenuUI(activeIndex, relativeY);
-});
-
-// WICHTIG: Klick/Tipp-Funktion bleibt erhalten
-menuItems.forEach(item => {
     item.addEventListener("click", (e) => {
         e.preventDefault();
         const targetIndex = item.getAttribute("data-target");
-        // Navigation ausführen...
-        fullscreenMenu.classList.remove("open");
+        const targetSection = sections[targetIndex];
+        
         navToggle.classList.remove("active");
-        sections[targetIndex].scrollIntoView({ behavior: "smooth" });
+        fullscreenMenu.classList.remove("open");
+        
+        targetSection.scrollIntoView({ behavior: "smooth" });
     });
 });
+
 </script>
 
 </body>
