@@ -258,6 +258,14 @@
             text-shadow: 0 0 40px rgba(160,255,0,0.8);
         }
 
+        /* Verhindert das Markieren von Text beim Wischen im Menü*/
+        .menu-item {
+            -webkit-tap-highlight-color: transparent; /* Entfernt das graue Viereck beim Tippen */
+            touch-action: none; /* Verhindert das Scrollen, während man im Menü wischt */
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
         /* INTERAKTIVE 3D CARD ANIMATION */
         .cards-wrapper {
             display: grid;
@@ -503,37 +511,30 @@ navToggle.addEventListener("click", () => {
     fullscreenMenu.classList.toggle("open");
 });
 
-// GEISTESKRANKER HOVER- & TOUCH-EFFEKT IM MENÜ
 menuItems.forEach(item => {
     
-    // Animation auslösen
-    const triggerAnimation = () => {
-        const randomX = Math.floor(Math.random() * 30) - 15;
-        const randomY = Math.floor(Math.random() * 30) - 15;
-        menu3dText.style.transform = `rotateX(${randomX}deg) rotateY(${randomY}deg) scale(1.15)`;
-        menu3dText.style.color = "rgba(160, 255, 0, 0.08)";
+    // Animation mit flüssigerer Steuerung
+    const moveAnimation = (e) => {
+        // Wir berechnen die Rotation basierend auf der Position des Fingers
+        const rect = item.getBoundingClientRect();
+        const relX = (e.clientX - rect.left) / rect.width - 0.5;
+        const relY = (e.clientY - rect.top) / rect.height - 0.5;
+        
+        menu3dText.style.transform = `rotateX(${relY * -40}deg) rotateY(${relX * 40}deg) scale(1.15)`;
+        menu3dText.style.color = "rgba(160, 255, 0, 0.12)";
     };
 
-    // Animation zurücksetzen
     const resetAnimation = () => {
         menu3dText.style.transform = "rotateX(15deg) rotateY(-15deg) scale(1)";
         menu3dText.style.color = "rgba(255, 255, 255, 0.018)";
     };
 
-    // Maus-Events
-    item.addEventListener("mouseenter", triggerAnimation);
-    item.addEventListener("mouseleave", resetAnimation);
-
-    // Touch/Pointer-Events (Handy)
-    item.addEventListener("pointerdown", (e) => {
-        triggerAnimation();
-    });
-
-    // Wenn der Finger das Element verlässt oder der Klick beendet wird
-    item.addEventListener("pointerup", resetAnimation);
+    // Events für Maus und Touch (Pointer events decken beides ab)
+    item.addEventListener("pointerenter", moveAnimation);
+    item.addEventListener("pointermove", moveAnimation);
     item.addEventListener("pointerleave", resetAnimation);
 
-    // NAVIGATION (Funktioniert jetzt auch auf Handys parallel zur Animation)
+    // Klick-Logik bleibt
     item.addEventListener("click", (e) => {
         e.preventDefault();
         const targetIndex = item.getAttribute("data-target");
@@ -542,7 +543,6 @@ menuItems.forEach(item => {
         navToggle.classList.remove("active");
         fullscreenMenu.classList.remove("open");
         
-        // Kurze Verzögerung, damit man die Animation beim Klick kurz sieht
         setTimeout(() => {
             targetSection.scrollIntoView({ behavior: "smooth" });
         }, 150);
