@@ -124,6 +124,15 @@
             font-weight: 600;
         }
 
+        @keyframes float {
+            0%, 100% { opacity: 0.05; }
+            50% { opacity: 0.1; }
+        }
+
+.korean-bg {
+    animation: float 6s infinite ease-in-out;
+}
+
         /* HERO INTRO */
         .hero h1 {
             font-size: clamp(1.5rem, 5vw, 2.5rem);
@@ -343,7 +352,16 @@
                 margin-top: 10px !important;
             }
         }
-        
+
+        /* Hintergrund-Transition für den Blur ------------------------------------------------------------------------------------*/
+        #scrollContainer {
+            transition: filter 0.5s ease;
+        }
+
+        .blur-background {
+            filter: blur(8px) brightness(0.6);
+            pointer-events: none; /* Verhindert, dass man die Karte nicht mehr anklicken kann */
+        }
     
     
     </style>
@@ -533,6 +551,36 @@ menuItems.forEach(item => {
     });
 });
 
+// Fokus-Blur Logik
+const cards = document.querySelectorAll(".card");
+const containerForBlur = document.getElementById("scrollContainer");
+
+cards.forEach(card => {
+    card.addEventListener("mouseenter", () => {
+        containerForBlur.classList.add("blur-background");
+        card.style.zIndex = "10"; // Karte nach vorne holen
+    });
+    
+    card.addEventListener("mouseleave", () => {
+        containerForBlur.classList.remove("blur-background");
+        card.style.zIndex = "auto";
+    });
+});
+
+
+// Parallax für Korean Background Text
+const koreanTexts = document.querySelectorAll(".korean-bg");
+
+container.addEventListener("scroll", () => {
+    const scrollPos = container.scrollTop;
+    
+    koreanTexts.forEach((el, index) => {
+        // Berechnet die Position basierend auf dem Scrollen
+        // Der Wert 0.2 steuert die Geschwindigkeit des Drifts
+        const offset = scrollPos * 0.2; 
+        el.style.transform = `translate(-50%, -50%) translateZ(-100px) translateY(${offset}px)`;
+    });
+}, { passive: true });
 </script>
 
 </body>
