@@ -354,27 +354,6 @@
 
         @keyframes blink { 50% { opacity: 0; } }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* Der Blitz-Effekt: Lässt die ganze Seite kurz weiß/grün leuchten */
-    .flash-active {
-        animation: flash-animation 0.15s ease-out;
-    }
-    @keyframes flash-animation {
-        0% { background-color: rgba(255, 255, 255, 0.2); }
-        100% { background-color: transparent; }
-    }
     </style>
 </head>
 <body>
@@ -499,9 +478,6 @@
 
     <!-- SEKTION 5: IMPRESSUM -->
     <section class="impressum-section" data-index="5">
-        <div id="weather-layer">
-    <canvas id="stormCanvas"></canvas>
-</div>
         <div class="korean-bg">앤토니</div>
         <div class="impressum-clean">
             <span class="title">Impressum</span>
@@ -576,84 +552,6 @@ menuItems.forEach(item => {
     });
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-const canvas = document.getElementById('stormCanvas');
-    const ctx = canvas.getContext('2d');
-    const weatherLayer = document.getElementById('weather-layer');
-
-    function resize() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-    }
-    window.addEventListener('resize', resize);
-    resize();
-
-    // Der Rekursive Blitz-Algorithmus
-    function drawLightning(x, y, ex, ey, thickness) {
-        if (thickness < 1) {
-            ctx.beginPath();
-            ctx.strokeStyle = '#fff'; // Blitz-Kern
-            ctx.lineWidth = 1.5;
-            ctx.moveTo(x, y);
-            ctx.lineTo(ex, ey);
-            ctx.stroke();
-            return;
-        }
-
-        let midX = (x + ex) / 2 + (Math.random() - 0.5) * 80;
-        let midY = (y + ey) / 2 + (Math.random() - 0.5) * 80;
-
-        drawLightning(x, y, midX, midY, thickness - 1);
-        drawLightning(midX, midY, ex, ey, thickness - 1);
-    }
-
-    function strike() {
-        // Seite blitzt auf
-        weatherLayer.classList.add('flash-active');
-        
-        ctx.shadowBlur = 15;
-        ctx.shadowColor = '#a0ff00'; // Nays-Grün Glow
-        
-        // Start und Ziel an zufälligen Rändern (0=Oben, 1=Rechts, 2=Unten, 3=Links)
-        const getEdgePoint = () => {
-            const side = Math.floor(Math.random() * 4);
-            if (side === 0) return { x: Math.random() * canvas.width, y: 0 };
-            if (side === 1) return { x: canvas.width, y: Math.random() * canvas.height };
-            if (side === 2) return { x: Math.random() * canvas.width, y: canvas.height };
-            return { x: 0, y: Math.random() * canvas.height };
-        };
-
-        const start = getEdgePoint();
-        const end = getEdgePoint();
-        
-        drawLightning(start.x, start.y, end.x, end.y, 6);
-
-        // Aufräumen
-        setTimeout(() => {
-            weatherLayer.classList.remove('flash-active');
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-        }, 150);
-    }
-
-    // Unregelmäßiges Gewitter-Timing
-    function stormLoop() {
-        if (Math.random() > 0.5) strike();
-        setTimeout(stormLoop, Math.random() * 3000 + 1000);
-    }
-    
-    stormLoop();
 </script>
 
 </body>
