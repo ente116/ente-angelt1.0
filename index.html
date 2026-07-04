@@ -150,6 +150,7 @@
                 text-shadow: none; 
             }
         }
+        
         /* NAV BURGER BUTTON */
         .nav-toggle {
             position: fixed;
@@ -333,6 +334,26 @@
         .impressum-clean { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; color: #ffffff; font-size: clamp(0.78rem, 1.6vw, 0.88rem); width: 100%; }
         .impressum-clean .title { text-transform: uppercase; letter-spacing: 2px; font-weight: 800; font-size: clamp(0.9rem, 1.8vw, 1.05rem); margin-bottom: 6px; }
         .impressum-clean .copyright { margin-top: 25px; font-size: 11px; opacity: 0.3; letter-spacing: 0.8px; border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 12px; width: 100%; max-width: 250px; }
+
+        /* TERMINAL STYLING */
+        .terminal-container {
+            font-family: 'Courier New', Courier, monospace;
+            background: rgba(0, 0, 0, 0.85);
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 25px;
+            width: 100%;
+            max-width: 600px;
+            text-align: left;
+            box-shadow: 0 0 20px rgba(160, 255, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        .line { color: #a0ff00; margin: 5px 0; font-size: 1.1rem; }
+        .cursor-blink { animation: blink 1s infinite; border-left: 10px solid #a0ff00; margin-left: 5px; }
+
+        @keyframes blink { 50% { opacity: 0; } }
+
     </style>
 </head>
 <body>
@@ -379,6 +400,16 @@
             <p>Deshalb passt Nays perfekt dazu: Es steht für modernes Angeln einfach rausgehen, fischen und den eigenen Style leben.</p>
         </div>
     </section>
+
+    <!-- DEIN TERMINAL IN EINER SEKTION -->
+    <div class="terminal-container">
+        <div class="line">[SYSTEM] INITIALIZING...</div>
+        <div class="line">[STATUS] ONLINE: ENTE.ANGELT_CORE</div>
+        <div class="line">[LOCATION] GELDER-MAAS-WAAL_DISTRICT</div>
+        <div class="line">[GEAR] SHIMANO_DC_V_NAYS_VNM_C06</div>
+        <div class="line">[MINDSET] STEALTH_MODE_ACTIVE...</div>
+        <div class="line">[MISSION] TARGETING_ZANDER<span class="cursor-blink"></span></div>
+    </div>
 
     <!-- SEKTION 2: TACKLE -->
     <section data-index="2">
