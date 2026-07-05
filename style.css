@@ -626,9 +626,9 @@ p {
     font-weight: 700;
     letter-spacing: 1px;
     padding: 40px 10px;
-    width: 100%;             /* Nimmt den verfügbaren Platz ein */
-    max-width: 650px;        /* HIER die Breite erhöhen (z.B. von 450px auf 650px) */
-    margin: 0 auto;
+    max-width: 92% !important; /* Nutzt fast die ganze Bildschirmbreite */
+    margin: 0 auto;           /* Zentriert das Panel */
+    padding: 20px;
 }
 
 .feedback-panel .form-success.show {
