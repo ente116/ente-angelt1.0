@@ -398,8 +398,9 @@ p {
 
 /* Feedback!!! Textarea vergrößern */
 .feedback-panel textarea {
-    width: 600px;       /* Füllt die ganze Breite der Karte aus */
-    height: 400px;     /* Mehr Höhe für längeres Feedback */
+    width: 100%;       /* Füllt die ganze Breite der Karte aus, ohne sie zu sprengen */
+    max-width: 600px;
+    height: min(400px, 50vh);     /* Mehr Höhe für längeres Feedback, aber auf kleinen Screens gedeckelt */
     background: transparent;
     border: 1px solid #333;
     border-radius: 30px;
@@ -409,6 +410,7 @@ p {
     resize: none;
     transition: border 0.3s ease;
     box-sizing: border-box; /* Wichtig, damit das Padding nicht die Breite sprengt */
+    display: block;
     
 }
 
@@ -443,9 +445,17 @@ p {
     border-radius: 30px;
     padding: 40px 30px;
     max-width: 850px;
+    width: 100%;
     box-shadow: 0 30px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.15);
     transform-style: preserve-3d;
     transition: transform 0.2s ease-out;
+}
+
+@media (max-width: 480px) {
+    .glass-panel-feedback {
+        padding: 28px 18px;
+        border-radius: 22px;
+    }
 }
 /* ============================= */
 /* PRELOADER                      */
