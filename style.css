@@ -127,7 +127,7 @@ p {
 .korean-bg {
     position: absolute;
     font-size: clamp(6rem, 18vw, 15rem);
-    color: rgba(255, 255, 255, 0.075);
+    color: rgba(255, 255, 255, 0.205);
     z-index: 1;
     pointer-events: none;
     top: 50%;
@@ -310,7 +310,7 @@ p {
 
 .card {
     padding-top: 50px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.062);
     border-radius: 24px;
     transform-style: preserve-3d;
     background: rgba(255, 255, 255, 0.01);
@@ -324,7 +324,7 @@ p {
 }
 
 .content-box { 
-    background: rgba(160, 255, 0, 0.88); 
+    background: rgba(71, 71, 71, 0.568); 
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     padding: 35px 24px 28px 24px; 
