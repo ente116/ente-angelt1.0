@@ -4,10 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ente.angelt | Next-Gen Predator Fishing</title>
+    <meta name="description" content="ente.angelt – modernes Raubfisch-Angeln, Streetfishing-Style und Nays Tackle Reviews. Folge dem Vibe auf Instagram.">
+    <meta name="theme-color" content="#060606">
+    <meta property="og:title" content="ente.angelt | Next-Gen Predator Fishing">
+    <meta property="og:description" content="Modernes Raubfisch-Angeln, Streetfishing-Style und Nays Tackle Reviews.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="start.jpg">
+    <link rel="icon" href="favicon.png" type="image/png">
     <link rel="preload" as="image" href="start.jpg">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
+<!-- PRELOADER -->
+<div class="preloader" id="preloader">
+    <div class="preloader-logo">ente.angelt</div>
+    <div class="preloader-bar"></div>
+</div>
+
+<!-- CUSTOM CURSOR -->
+<div class="cursor-dot" id="cursorDot"></div>
+<div class="cursor-ring" id="cursorRing"></div>
 
 <!-- NAVIGATION INTERACTION BUTTON -->
 <div class="nav-toggle" id="navToggle">
@@ -32,6 +49,17 @@
 
 <div class="arrow" id="scrollArrow">↓</div>
 
+<!-- SECTION DOT NAVIGATION -->
+<nav class="section-dots" id="sectionDots" aria-label="Sektionsnavigation">
+    <button class="dot" data-index="0" data-label="home" aria-label="Zu home springen"></button>
+    <button class="dot" data-index="1" data-label="der vibe" aria-label="Zu der vibe springen"></button>
+    <button class="dot" data-index="2" data-label="tackle" aria-label="Zu tackle springen"></button>
+    <button class="dot" data-index="3" data-label="die taktik" aria-label="Zu die taktik springen"></button>
+    <button class="dot" data-index="4" data-label="socials" aria-label="Zu socials springen"></button>
+    <button class="dot" data-index="5" data-label="feedback" aria-label="Zu feedback springen"></button>
+    <button class="dot" data-index="6" data-label="impressum" aria-label="Zu impressum springen"></button>
+</nav>
+
 <div class="container" id="scrollContainer">
 
     <!-- SEKTION 0: HERO -->
@@ -51,6 +79,14 @@
             <p>Auch die Streetwear-Komponente gehört für mich dazu. Angeln ist heute nicht nur ein Hobby, sondern ein komplett neuer Vibe Ausrüstung, Kleidung und Mindset gehören zusammen. Genau das macht den Unterschied zwischen klassischem Angeln und moderner Fishing-Kultur.</p>
             <p>Deshalb passt Nays perfekt dazu: Es steht für modernes Angeln einfach rausgehen, fischen und den eigenen Style leben.</p>
         </div>
+
+        <div class="gallery-wrapper">
+            <div class="gallery-item"><img src="start.jpg" alt="Fangbild Platzhalter 1" loading="lazy"></div>
+            <div class="gallery-item"><img src="start.jpg" alt="Fangbild Platzhalter 2" loading="lazy"></div>
+            <div class="gallery-item"><img src="start.jpg" alt="Fangbild Platzhalter 3" loading="lazy"></div>
+            <div class="gallery-item"><img src="start.jpg" alt="Fangbild Platzhalter 4" loading="lazy"></div>
+        </div>
+        <p class="gallery-note">Platzhalter – hier deine eigenen Fangbilder einsetzen</p>
     </section>
 
 
@@ -137,16 +173,16 @@
     </section>
 
     <section data-index="5">
-        <div class="glass-card-panel dynamic-3d-panel">        
-            <!-- modify this form HTML and place wherever you want your form -->
-            <form action="https://formspree.io/f/xeebnqnv" method="POST">
-            <label>
-                Your Feedback:
-                <textarea name="message"></textarea>
-            </label>
-            <!-- your other form fields go here -->
-            <button type="submit">Send</button>
-            </form>
+        <div class="glass-panel-feedback">
+            <div class="feedback-panel dynamic-3d-panel" id="feedbackPanel">        
+                <form action="https://api.web3forms.com/submit" method="POST" id="feedbackForm">
+                <input type="hidden" name="access_key" value="c2661dab-07e3-4961-a2f1-38db044492fc">
+                <p><b>Feedback:</b></p>
+                <textarea name="message" required></textarea><br>
+                <button type="submit">SEND</button>
+                </form>
+                <div class="form-success" id="formSuccess">Danke! Deine Nachricht ist angekommen. ✓</div>
+            </div>  
         </div>
 
     </section>
