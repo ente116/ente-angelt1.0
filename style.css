@@ -12,6 +12,7 @@ body, html {
     background: #060606;
     color: #fff;
     overflow: hidden;
+    text-align: left;
 }
 
 /* SCROLL CONTAINER */
@@ -37,7 +38,6 @@ section {
     justify-content: center;
     align-items: center;
     padding: 100px 24px;
-    text-align: center;
     position: relative;
     width: 100%;
     background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('start.jpg') center/cover fixed;
@@ -76,8 +76,18 @@ section.show {
 section > *:not(.korean-bg) { position: relative; z-index: 2; }
 
 /* TYPOGRAFIE (STRIKT KLEINGESCHRIEBEN BEI ENTE.ANGELT) */
-h1, h2 {
+h1 {
     color: #fff;
+    letter-spacing: 1px;
+    margin-bottom: 2px;
+    font-weight: 700;
+    font-size: clamp(2.2rem, 6vw, 3.5rem);
+    text-transform: uppercase;
+}
+
+h2 {
+    color: #fff;
+    text-align: center;
     letter-spacing: 1px;
     margin-bottom: 2px;
     font-weight: 700;
@@ -307,7 +317,7 @@ p {
     transform: translate3d(0, 0, 45px); backdrop-filter: blur(5px);
     will-change: transform;
 }
-.date-box span { display: block; text-align: center; line-height: 1.2; }
+.date-box span { display: block; line-height: 1.2; }
 .date-box .month { color: #a0ff00; font-size: 8px; font-weight: 700; text-transform: uppercase; }
 .date-box .date { font-size: 16px; font-weight: 900; color: #fff; margin-top: 2px; }
 
@@ -324,13 +334,12 @@ p {
 /* CLEAN WHITE IMPRESSUM */
 .impressum-clean { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; color: #ffffff; font-size: clamp(0.78rem, 1.6vw, 0.88rem); width: 100%; }
 .impressum-clean .title { text-transform: uppercase; letter-spacing: 2px; font-weight: 800; font-size: clamp(0.9rem, 1.8vw, 1.05rem); margin-bottom: 6px; }
-.impressum-clean .copyright { margin-top: 25px; font-size: 11px; opacity: 0.3; letter-spacing: 0.8px; border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 12px; width: 100%; max-width: 250px; }
+.impressum-clean .copyright { margin-top: 25px; font-size: 11px; opacity: 0.3; letter-spacing: 0.8px; border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 12px; width: 100%; max-width: 250px; text-align: center;}
 
 /* TERMINAL STYLING */
 .terminal-container {
     font-family: 'Courier New', Courier, monospace;
     text-align: left;
-    
     /* Zentrierung: 20px Abstand oben/unten, automatisch links/rechts */
     margin: 20px auto; 
 
