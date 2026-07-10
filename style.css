@@ -148,12 +148,12 @@ p {
 
 .hero p {
     color: #a0ff00;
-    margin-top: 1px;
+    margin-top: -6px;
+    line-height: 1.1;
     letter-spacing: 3px;
     font-weight: 800;
     font-size: clamp(1.2rem, 3vw, 1rem);
-    text-shadow: 0 0 20px rgba(160, 255, 0, 0.35);
-}
+    text-shadow: 0 0 20px rgba(160, 255, 0, 0.35);}
 
 @keyframes introGlow {
     0% { 
