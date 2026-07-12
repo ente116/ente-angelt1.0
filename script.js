@@ -1,57 +1,101 @@
-// ============================= //
-// PRELOADER                      //
-// ============================= //
+const sections = document.querySelectorAll("section");
+const arrow = document.getElementById("scrollArrow");
+const container = document.getElementById("scrollContainer");
+const navToggle = document.getElementById("navToggle");
+const fullscreenMenu = document.getElementById("fullscreenMenu");
+const menu3dText = document.getElementById("menu3dText");
+const menuItems = document.querySelectorAll(".menu-item");
 const preloader = document.getElementById("preloader");
-function hidePreloader() { if (preloader) preloader.classList.add("hidden"); }
-window.addEventListener("load", () => setTimeout(hidePreloader, 450));
-setTimeout(hidePreloader, 3000); // safety net for slow third-party embeds
+const cursorDot = document.getElementById("cursorDot");
+const cursorRing = document.getElementById("cursorRing");
+const dots = document.querySelectorAll(".dot");
 
-// ============================= //
-// NAV: scrolled state             //
-// ============================= //
-const nav = document.getElementById("siteNav");
-window.addEventListener("scroll", () => {
-    nav.classList.toggle("scrolled", window.scrollY > 40);
-}, { passive: true });
-
-// ============================= //
-// MOBILE DRAWER                  //
-// ============================= //
-const burger = document.getElementById("navBurger");
-const drawer = document.getElementById("drawer");
-burger.addEventListener("click", () => {
-    burger.classList.toggle("active");
-    drawer.classList.toggle("open");
+// PRELOADER: hide once everything (incl. hero background image) is loaded
+function hidePreloader() {
+    if (preloader) preloader.classList.add("hidden");
+}
+window.addEventListener("load", () => {
+    setTimeout(hidePreloader, 500);
 });
-drawer.querySelectorAll("[data-close]").forEach(link => {
-    link.addEventListener("click", () => {
-        burger.classList.remove("active");
-        drawer.classList.remove("open");
-    });
-});
+// Safety net in case 'load' is delayed by slow third-party embeds
+setTimeout(hidePreloader, 3500);
 
-// ============================= //
-// SCROLL REVEAL                  //
-// ============================= //
-const revealEls = document.querySelectorAll(".reveal");
-const revealObserver = new IntersectionObserver(entries => {
-    entries.forEach((entry, i) => {
-        if (entry.isIntersecting) {
-            entry.target.style.transitionDelay = `${(i % 4) * 0.08}s`;
-            entry.target.classList.add("in-view");
-            revealObserver.unobserve(entry.target);
+// INTERSECTION OBSERVER FOR SECTION FADE-IN
+const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+        if(entry.isIntersecting){
+            entry.target.classList.add("show");
         }
     });
 }, { threshold: 0.15 });
-revealEls.forEach(el => revealObserver.observe(el));
 
+sections.forEach(sec => observer.observe(sec));
+
+// SEPARATE OBSERVER FOR ACTIVE SECTION-DOT (needs section to be mostly in view)
+const dotObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            const idx = entry.target.getAttribute("data-index");
+            dots.forEach(d => d.classList.toggle("active", d.getAttribute("data-index") === idx));
+        }
+    });
+}, { threshold: 0.5 });
+
+sections.forEach(sec => dotObserver.observe(sec));
+
+// SECTION DOTS: click to jump
+dots.forEach(dot => {
+    dot.addEventListener("click", () => {
+        const idx = dot.getAttribute("data-index");
+        const target = document.querySelector(`section[data-index="${idx}"]`);
+        if (target) target.scrollIntoView({ behavior: "smooth" });
+    });
+});
+
+// SCROLL INDICATOR LOGIC
+container.addEventListener("scroll", () => {
+    if (container.scrollTop > 60) {
+        arrow.style.opacity = "0";
+    } else {
+        arrow.style.opacity = "1";
+    }
+}, { passive: true });
+
+// NAV-TOGGLE ACTION
+navToggle.addEventListener("click", () => {
+    navToggle.classList.toggle("active");
+    fullscreenMenu.classList.toggle("open");
+});
+
+// GEISTESKRANKER HOVER-EFFEKT IM MENÜ
+menuItems.forEach(item => {
+    item.addEventListener("mouseenter", () => {
+        const randomX = Math.floor(Math.random() * 30) - 15;
+        const randomY = Math.floor(Math.random() * 30) - 15;
+        menu3dText.style.transform = `rotateX(${randomX}deg) rotateY(${randomY}deg) scale(1.15)`;
+        menu3dText.style.color = "rgba(160, 255, 0, 0.08)";
+    });
+    
+    item.addEventListener("mouseleave", () => {
+        menu3dText.style.transform = "rotateX(15deg) rotateY(-15deg) scale(1)";
+        menu3dText.style.color = "rgba(255, 255, 255, 0.018)";
+    });
+
+    item.addEventListener("click", (e) => {
+        e.preventDefault();
+        const targetIndex = item.getAttribute("data-target");
+        const targetSection = sections[targetIndex];
+        
+        navToggle.classList.remove("active");
+        fullscreenMenu.classList.remove("open");
+        
+        targetSection.scrollIntoView({ behavior: "smooth" });
+    });
+});
 // ============================= //
 // CUSTOM CURSOR (desktop only)   //
 // ============================= //
-const cursorDot = document.getElementById("cursorDot");
-const cursorRing = document.getElementById("cursorRing");
 const isFinePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
-
 if (isFinePointer && cursorDot && cursorRing) {
     let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
 
@@ -69,7 +113,7 @@ if (isFinePointer && cursorDot && cursorRing) {
     }
     animateRing();
 
-    const hoverTargets = "a, button, .tackle-card, .catch-card";
+    const hoverTargets = "a, button, .dot, .nav-toggle, .see-more, .card";
     document.addEventListener("mouseover", (e) => {
         if (e.target.closest(hoverTargets)) cursorRing.classList.add("hovering");
     });
@@ -79,37 +123,28 @@ if (isFinePointer && cursorDot && cursorRing) {
 }
 
 // ============================= //
-// MAGNETIC BUTTONS (desktop only)//
+// SUBTLE UI SOUND (menu toggle)  //
 // ============================= //
-if (isFinePointer) {
-    document.querySelectorAll(".magnetic").forEach(btn => {
-        btn.addEventListener("mousemove", (e) => {
-            const r = btn.getBoundingClientRect();
-            const x = e.clientX - r.left - r.width / 2;
-            const y = e.clientY - r.top - r.height / 2;
-            btn.style.transform = `translate(${x * 0.25}px, ${y * 0.35}px)`;
-        });
-        btn.addEventListener("mouseleave", () => {
-            btn.style.transform = "translate(0, 0)";
-        });
-    });
+let audioCtx = null;
+function playClick() {
+    try {
+        audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(720, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(340, audioCtx.currentTime + 0.08);
+        gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.12);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.13);
+    } catch (err) {
+        // Web Audio not available/blocked — fail silently, sound is a nice-to-have
+    }
 }
-
-// ============================= //
-// AURA PARALLAX (subtle, desktop)//
-// ============================= //
-if (isFinePointer) {
-    const auras = document.querySelectorAll(".aura");
-    window.addEventListener("mousemove", (e) => {
-        const px = (e.clientX / window.innerWidth - 0.5);
-        const py = (e.clientY / window.innerHeight - 0.5);
-        auras.forEach((aura, i) => {
-            const depth = (i + 1) * 8;
-            aura.style.marginLeft = `${px * depth}px`;
-            aura.style.marginTop = `${py * depth}px`;
-        });
-    });
-}
+navToggle.addEventListener("click", playClick);
 
 // ============================= //
 // FEEDBACK FORM (AJAX submit)    //
@@ -142,7 +177,7 @@ if (feedbackForm) {
             }
         } catch (err) {
             submitBtn.disabled = false;
-            submitBtn.textContent = "Send";
+            submitBtn.textContent = "SEND";
             alert("Da ist etwas schiefgelaufen. Bitte versuch's gleich nochmal.");
         }
     });
